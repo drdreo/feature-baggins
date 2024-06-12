@@ -15,3 +15,10 @@ admin@example.com - adminpassword
 curl -o docker-compose.yml https://raw.githubusercontent.com/Flagsmith/flagsmith/main/docker-compose.yml
 docker-compose -f docker-compose.yml up
 ```
+
+## Unleash
+https://www.getunleash.io/
+
+http://localhost:4242/
+admin - unleash4all
+

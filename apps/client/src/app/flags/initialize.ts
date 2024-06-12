@@ -1,7 +1,8 @@
 import {HttpClient} from "@angular/common/http";
 import flagsmith from 'flagsmith';
+import { UnleashClient } from 'unleash-proxy-client';
 
-export function initializeFeatureFlags(environmentID: string, httpClient: HttpClient): Promise<any> {
+export function initializeFlagsmithFlags(environmentID: string, httpClient: HttpClient): Promise<any> {
     return flagsmith.init({
         api: 'http://localhost:8000/api/v1/',
         environmentID,
@@ -24,5 +25,32 @@ export function initializeFeatureFlags(environmentID: string, httpClient: HttpCl
                 console.log('Color has changed: ' + brandColor)
             }
         }
+    });
+}
+
+
+export function initializeUnleashFlags(clientKey: string): Promise<void> {
+    return new Promise((resolve) => {
+        const unleash = new UnleashClient({
+            url: 'http://localhost:4242/api/frontend',
+            clientKey,
+            appName: 'Tech Demo',
+            customHeaders: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+
+        unleash.start();
+
+        unleash.on('ready', () => {
+            console.log('Unleash is ready');
+            resolve();
+        });
+
+        unleash.on('update', () => {
+            const color = unleash.isEnabled('brand_color');
+            console.log('Color is updated: ' + color)
+        });
+        window.unleash = unleash;
     });
 }

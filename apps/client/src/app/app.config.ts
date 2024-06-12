@@ -1,17 +1,23 @@
 import {APP_INITIALIZER, ApplicationConfig, provideExperimentalZonelessChangeDetection} from '@angular/core';
 import {HttpClient, provideHttpClient} from "@angular/common/http";
-import {initializeFeatureFlags} from "./flags/initialize-flags";
+import { initializeFlagsmithFlags, initializeUnleashFlags } from './flags/initialize';
 
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideExperimentalZonelessChangeDetection(),
         provideHttpClient(),
+        // FLAGSMITH
+        // {
+        //     provide: APP_INITIALIZER,
+        //     useFactory: () => (httpClient: HttpClient) => initializeFlagsmithFlags("5zTgST86Fv25rsKLPqyrLb", httpClient),
+        //     multi: true,
+        //     deps: [HttpClient]
+        // }
         {
             provide: APP_INITIALIZER,
-            useFactory: () => (httpClient: HttpClient) => initializeFeatureFlags("5zTgST86Fv25rsKLPqyrLb", httpClient),
+            useFactory: () => () => initializeUnleashFlags("default:development.unleash-insecure-frontend-api-token"),
             multi: true,
-            deps: [HttpClient]
         }
     ],
 };
